@@ -36,10 +36,8 @@ function sendMail(subject, message) {
     mailOptions.text = message;
 
     transporter.sendMail(mailOptions, (error, info) => {
-        mailOptions = {
-            subject: `${config.subjectPrefix} - `,
-            text: ''
-        };
+        mailOptions.subject = `${config.subjectPrefix} - `;
+        mailOptions.text = ``;
 
         if (error) {
             console.log(error);
