@@ -31,6 +31,7 @@ function setupSmtp() {
 }
 
 function sendMail(subject, message) {
+    console.log(message);
     mailOptions.subject += subject;
     mailOptions.text = message;
 
@@ -87,7 +88,6 @@ async function setupTail(filesToWatch) {
 
         tail.on('line', data => {
             lineCounter++;
-            console.log(`Watcher (${fileName}): ${data}`);
             filterLog(data);
         });
 
