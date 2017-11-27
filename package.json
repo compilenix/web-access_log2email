@@ -1,0 +1,18 @@
+{
+    "name": "web-access_log2email",
+    "description": "monitor a webserver's access log and e-mail defined matches",
+    "authors": "Compilenix",
+    "version": "1.0.0",
+    "main": "Index.js",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://git.compilenix.org/Compilenix/web-access_log2email"
+    },
+    "dependencies": {
+        "fs-extra": "^4.0.2",
+        "node-tail": "0.0.4",
+        "nodemailer": "4.4.0",
+        "tail": "^1.2.3"
+    }
+}
