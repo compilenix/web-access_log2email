@@ -54,6 +54,7 @@ function optimizeExpressionCollectionOrder() {
         if (first.matchCounter < seconds.matchCounter) return 1;
         return 0;
     });
+    if (config.debug) console.log(config.expressions);
 }
 
 function filterLog( /** @type {string} */ line) {

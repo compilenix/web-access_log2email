@@ -15,7 +15,8 @@ class Config {
         this.expressions = [
             { match: /HTTP\/\d\.\d\" 404/g, subject: 'HTTP 404', matchCounter: 0 },
             { match: /HTTP\/\d\.\d\" 5\d{2}/g, subject: 'HTTP 5xx', matchCounter: 0 }
-        ]
+        ],
+        this.debug = false // show additional console output
     }
 };
 
