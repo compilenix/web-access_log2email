@@ -25,25 +25,22 @@ function setupSmtp() {
     mailOptions = {
         from: config.mailfrom,
         to: config.mailto,
-        subject: `${config.subjectPrefix} - `,
+        subject: `${config.subjectPrefix} -`,
         text: ''
     };
 }
 
-function sendMail(subject, message) {
-    console.log(message);
-    mailOptions.subject += subject;
-    mailOptions.text = message;
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        mailOptions.subject = `${config.subjectPrefix} - `;
-        mailOptions.text = ``;
-
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
+async function sendMail(mailOptions) {
+    return new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error);
+                reject(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+                resolve(info);
+            }
+        });
     });
 }
 
@@ -57,21 +54,26 @@ function optimizeExpressionCollectionOrder() {
     if (config.debug) console.log(config.expressions);
 }
 
-function filterLog( /** @type {string} */ line) {
+async function filterLog( /** @type {string} */ line) {
     if (lineCounter % 10 === 0) optimizeExpressionCollectionOrder();
 
     for (let index = 0; index < config.expressions.length; index++) {
         const expression = config.expressions[index];
+        expression.match.lastIndex = 0;
 
-        if (expression.match.test(line)) {
+        if (expression.match.test(line.toString())) {
             config.expressions[index].matchCounter++;
-            sendMail(expression.subject, line);
-            return;
+            await sendMail({
+                from: config.mailfrom,
+                to: config.mailto,
+                subject: `${config.subjectPrefix} - ${expression.subject}`,
+                text: line
+            });
         }
     }
 }
 
-async function setupTail(filesToWatch) {
+async function setupTail( /** @type {string[]} */ filesToWatch) {
     for (const fileName of filesToWatch) {
         if (!(await fs.exists(fileName))) {
             console.log(`File not found, not watching: ${fileName}`);
@@ -85,7 +87,7 @@ async function setupTail(filesToWatch) {
             follow: true
         });
 
-        tail.on('line', data => {
+        tail.on('line', ( /** @type {string} */ data) => {
             lineCounter++;
             filterLog(data);
         });
@@ -98,7 +100,8 @@ async function setupTail(filesToWatch) {
     }
 }
 
-return (async() => {
+(async() => {
     setupSmtp();
     await setupTail(config.filesToWatch);
+    //setInterval(emailQueueWorker, 2000);
 })();
