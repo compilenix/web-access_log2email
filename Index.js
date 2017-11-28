@@ -11,7 +11,7 @@ let slack = new Slack();
 let mailOptions = {};
 let lineCounter = 0;
 const fileWatchers = {};
-let messages = [];
+let messages = new Array();
 
 function setupSmtp() {
     transporter = nodemailer.createTransport({
@@ -36,25 +36,30 @@ function setupSlack() {
     slack.setWebhook(config.slackWebHookUri);
 }
 
-function notificationQueueWorker(expression, line) {
-    if (config.enableEmail) {
-        //message =
-        await sendMail({
-            from: config.mailfrom,
-            to: config.mailto,
-            subject: `${config.subjectPrefix}`,
-            text: `${expression.subject}`
-        });
-    }
+async function notificationQueueWorker() {
+    while (messages.length > 0) {
+        let message = messages[0];
+        messages.shift();
+        if (!message) break;
 
-    if (config.enableSlack) {
-        slack.webhook({
-            channel: config.slackChannel,
-            username: config.slackUserName,
-            text: `${expression.subject}: ${line}`
-        }, (err, response) => {
-            if (config.debug) console.log(response);
-        });
+        if (config.enableEmail) {
+            await sendMail({
+                from: config.mailfrom,
+                to: config.mailto,
+                subject: `${config.subjectPrefix}`,
+                text: `${message.expression.subject}`
+            });
+        }
+
+        if (config.enableSlack) {
+            slack.webhook({
+                channel: config.slackChannel,
+                username: config.slackUserName,
+                text: `${message.expression.subject}: ${message.message}`
+            }, (err, response) => {
+                if (config.debug) console.log(response);
+            });
+        }
     }
 }
 
@@ -91,11 +96,11 @@ async function filterLog( /** @type {string} */ line) {
 
         if (expression.match.test(line)) {
             config.expressions[index].matchCounter++;
-            // messages.push({
-            //     expression: expression,
-            //     message: line
-            // });
-            notificationQueueWorker(expression, line);
+            messages.push({
+                expression: expression,
+                message: line
+            });
+            // notificationQueueWorker(expression, line);
         }
     }
 }
@@ -131,5 +136,5 @@ async function setupTail( /** @type {string[]} */ filesToWatch) {
     setupSmtp();
     setupSlack();
     await setupTail(config.filesToWatch);
-    // setTimeout(notificationQueueWorker, 5000);
+    setInterval(notificationQueueWorker, 5000);
 })();
