@@ -1,5 +1,6 @@
 class Config {
     constructor() {
+        this.enableEmail = false;
         this.smtpUsername = 'smtp login username';
         this.smtpPassword = 'password';
         this.smtpHost = 'your.email.server';
@@ -15,7 +16,9 @@ class Config {
         this.expressions = [
             { match: /HTTP\/\d\.\d\" 404/g, subject: 'HTTP 404', matchCounter: 0 },
             { match: /HTTP\/\d\.\d\" 5\d{2}/g, subject: 'HTTP 5xx', matchCounter: 0 }
-        ],
+        ];
+        this.enableSlack = true;
+        this.slackWebHookUri = 'https://hooks.slack.com/services/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'
         this.debug = false // show additional console output
     }
 };

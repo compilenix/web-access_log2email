@@ -4,9 +4,10 @@ const fs = require("fs-extra");
 const nodemailer = require('nodemailer');
 const config = require("./Config.js");
 const Tail = require('tail').Tail;
-
+const Slack = require('slack-node');
 
 let transporter;
+let slack = new Slack();
 let mailOptions = {};
 let lineCounter = 0;
 const fileWatchers = {};
@@ -28,6 +29,10 @@ function setupSmtp() {
         subject: `${config.subjectPrefix} -`,
         text: ''
     };
+}
+
+function setupSlack() {
+    slack.setWebhook(config.slackWebHookUri);
 }
 
 async function sendMail(mailOptions) {
@@ -55,7 +60,7 @@ function optimizeExpressionCollectionOrder() {
 }
 
 async function filterLog( /** @type {string} */ line) {
-    if (lineCounter % 10 === 0) optimizeExpressionCollectionOrder();
+    if (lineCounter % 100 === 0) optimizeExpressionCollectionOrder();
 
     for (let index = 0; index < config.expressions.length; index++) {
         const expression = config.expressions[index];
@@ -63,12 +68,24 @@ async function filterLog( /** @type {string} */ line) {
 
         if (expression.match.test(line.toString())) {
             config.expressions[index].matchCounter++;
-            await sendMail({
-                from: config.mailfrom,
-                to: config.mailto,
-                subject: `${config.subjectPrefix} - ${expression.subject}`,
-                text: line
-            });
+            if (config.enableEmail) {
+                await sendMail({
+                    from: config.mailfrom,
+                    to: config.mailto,
+                    subject: `${config.subjectPrefix} - ${expression.subject}`,
+                    text: line
+                });
+            }
+
+            if (config.enableSlack) {
+                slack.webhook({
+                    channel: "#general",
+                    username: "web-access_log2slack",
+                    text: `${expression.subject}: ${line}`
+                }, (err, response) => {
+                    console.log(response);
+                });
+            }
         }
     }
 }
@@ -102,6 +119,6 @@ async function setupTail( /** @type {string[]} */ filesToWatch) {
 
 (async() => {
     setupSmtp();
+    setupSlack();
     await setupTail(config.filesToWatch);
-    //setInterval(emailQueueWorker, 2000);
 })();
