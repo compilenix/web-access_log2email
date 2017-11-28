@@ -18,8 +18,10 @@ class Config {
             { match: /HTTP\/\d\.\d\" 5\d{2}/g, subject: 'HTTP 5xx', matchCounter: 0 }
         ];
         this.enableSlack = false;
-        this.slackWebHookUri = 'https://hooks.slack.com/services/xxxxxx/xxxxxx/xxxxxx'
-        this.debug = false // show additional console output
+        this.slackWebHookUri = 'https://hooks.slack.com/services/xxxxxx/xxxxxx/xxxxxx';
+        this.slackChannel = '#general';
+        this.slackUsername = 'webserver-access_log-bot';
+        this.debug = true;
     }
 };
 

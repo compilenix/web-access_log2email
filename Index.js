@@ -79,8 +79,8 @@ async function filterLog( /** @type {string} */ line) {
 
             if (config.enableSlack) {
                 slack.webhook({
-                    channel: "#general",
-                    username: "web-access_log2slack",
+                    channel: config.slackChannel,
+                    username: config.slackUserName,
                     text: `${expression.subject}: ${line}`
                 }, (err, response) => {
                     console.log(response);
