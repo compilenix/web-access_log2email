@@ -39,10 +39,10 @@ async function sendMail(mailOptions) {
     return new Promise((resolve, reject) => {
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log(error);
+                if (config.debug) console.log(error);
                 reject(error);
             } else {
-                console.log('Email sent: ' + info.response);
+                if (config.debug) console.log('Email sent: ' + info.response);
                 resolve(info);
             }
         });
@@ -66,7 +66,7 @@ async function filterLog( /** @type {string} */ line) {
         const expression = config.expressions[index];
         expression.match.lastIndex = 0;
 
-        if (expression.match.test(line.toString())) {
+        if (expression.match.test(line)) {
             config.expressions[index].matchCounter++;
             if (config.enableEmail) {
                 await sendMail({
@@ -83,7 +83,7 @@ async function filterLog( /** @type {string} */ line) {
                     username: config.slackUserName,
                     text: `${expression.subject}: ${line}`
                 }, (err, response) => {
-                    console.log(response);
+                    if (config.debug) console.log(response);
                 });
             }
         }
