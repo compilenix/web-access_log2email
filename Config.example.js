@@ -6,8 +6,8 @@ class Config {
         this.smtpHost = 'your.email.server';
         this.smtpPort = 25;
         this.smtps = false;
-        this.mailfrom = 'foo@baar.local';
-        this.mailto = 'foo@baar.local';
+        this.mailfrom = 'foo@bar.local';
+        this.mailto = 'foo@bar.local';
         this.subjectPrefix = 'access_log mailer: ';
         this.filesToWatch = [
             'test.txt',
