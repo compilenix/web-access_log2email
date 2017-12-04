@@ -94,12 +94,13 @@ async function sendMail(mailOptions) {
 
 // sort by expression.matchCounter DESC
 function optimizeExpressionCollectionOrder() {
-    config.expressions.sort((first, seconds) => {
-        if (first.matchCounter > seconds.matchCounter) return -1;
-        if (first.matchCounter < seconds.matchCounter) return 1;
+    console.log('sort expressions by most used');
+    config.expressions.sort((first, second) => {
+        if (first.matchCounter > second.matchCounter) return -1;
+        if (first.matchCounter < second.matchCounter) return 1;
         return 0;
     });
-    if (config.debug) console.log(config.expressions);
+    console.log(config.expressions);
 }
 
 async function filterLog( /** @type {string} */ line) {
