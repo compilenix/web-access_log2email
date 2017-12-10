@@ -1,5 +1,14 @@
 class Config {
     constructor() {
+        this.filesToWatch = [
+            'test.txt',
+            'test1.txt'
+        ];
+        this.expressions = [
+            { match: /HTTP\/\d\.\d\" 404/g, subject: 'HTTP 404: ' },
+            { match: /HTTP\/\d\.\d\" 5\d{2}/g, subject: 'HTTP 5xx: ' }
+        ];
+
         this.enableEmail = false;
         this.smtpUsername = 'smtp login username';
         this.smtpPassword = 'password';
@@ -9,14 +18,7 @@ class Config {
         this.mailfrom = 'foo@bar.local';
         this.mailto = 'foo@bar.local';
         this.subjectPrefix = 'access_log mailer: ';
-        this.filesToWatch = [
-            'test.txt',
-            'test1.txt'
-        ];
-        this.expressions = [
-            { match: /HTTP\/\d\.\d\" 404/g, subject: 'HTTP 404: ' },
-            { match: /HTTP\/\d\.\d\" 5\d{2}/g, subject: 'HTTP 5xx: ' }
-        ];
+
         this.enableSlack = false;
         this.slackWebHookUri = 'https://hooks.slack.com/services/xxxxxx/xxxxxx/xxxxxx';
         this.slackChannel = '#general';
