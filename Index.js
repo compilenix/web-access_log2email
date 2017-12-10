@@ -14,33 +14,6 @@ const fileWatchers = {};
 let messages = new Array();
 let queueWorkerRunning = false;
 
-function setupSmtp() {
-    transporter = nodemailer.createTransport({
-        host: config.smtpHost,
-        port: config.smtpPort,
-        secure: config.smtps,
-        auth: {
-            user: config.smtpUsername,
-            pass: config.smtpPassword
-        }
-    });
-
-    mailOptions = {
-        from: config.mailfrom,
-        to: config.mailto,
-        subject: `${config.subjectPrefix} -`,
-        text: ''
-    };
-}
-
-function setupSlack() {
-    slack.setWebhook(config.slackWebHookUri);
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function notificationQueueWorker() {
     if (queueWorkerRunning) return;
     queueWorkerRunning = true;
@@ -78,20 +51,6 @@ async function notificationQueueWorker() {
     queueWorkerRunning = false;
 }
 
-async function sendMail(mailOptions) {
-    return new Promise((resolve, reject) => {
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                if (config.debug) console.log(error);
-                reject(error);
-            } else {
-                if (config.debug) console.log('Email sent: ' + info.response);
-                resolve(info);
-            }
-        });
-    });
-}
-
 async function filterLog( /** @type {string} */ line) {
     for (let index = 0; index < config.expressions.length; index++) {
         const expression = config.expressions[index];
@@ -105,6 +64,20 @@ async function filterLog( /** @type {string} */ line) {
             });
         }
     }
+}
+
+async function sendMail(mailOptions) {
+    return new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                if (config.debug) console.log(error);
+                reject(error);
+            } else {
+                if (config.debug) console.log('Email sent: ' + info.response);
+                resolve(info);
+            }
+        });
+    });
 }
 
 async function setupTail( /** @type {string[]} */ filesToWatch) {
@@ -142,6 +115,33 @@ async function setupTail( /** @type {string[]} */ filesToWatch) {
 
         fileWatchers[fileName] = tail;
     }
+}
+
+function setupSmtp() {
+    transporter = nodemailer.createTransport({
+        host: config.smtpHost,
+        port: config.smtpPort,
+        secure: config.smtps,
+        auth: {
+            user: config.smtpUsername,
+            pass: config.smtpPassword
+        }
+    });
+
+    mailOptions = {
+        from: config.mailfrom,
+        to: config.mailto,
+        subject: `${config.subjectPrefix} -`,
+        text: ''
+    };
+}
+
+function setupSlack() {
+    slack.setWebhook(config.slackWebHookUri);
+}
+
+function sleep(/** @type {Number} */ ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 (async() => {
