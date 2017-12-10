@@ -92,20 +92,7 @@ async function sendMail(mailOptions) {
     });
 }
 
-// sort by expression.matchCounter DESC
-function optimizeExpressionCollectionOrder() {
-    console.log('sort expressions by most used');
-    config.expressions.sort((first, second) => {
-        if (first.matchCounter > second.matchCounter) return -1;
-        if (first.matchCounter < second.matchCounter) return 1;
-        return 0;
-    });
-    console.log(config.expressions);
-}
-
 async function filterLog( /** @type {string} */ line) {
-    if (lineCounter % 100 === 0) optimizeExpressionCollectionOrder();
-
     for (let index = 0; index < config.expressions.length; index++) {
         const expression = config.expressions[index];
         expression.match.lastIndex = 0;
