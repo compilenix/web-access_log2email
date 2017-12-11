@@ -21,6 +21,8 @@ async function notificationQueueWorker() {
         let message = messages[0];
         messages.shift();
 
+        if (messages.length > 0) console.log(`remaining messages in queue: ${messages.length}`);
+
         if (!message) {
             continue;
         }
