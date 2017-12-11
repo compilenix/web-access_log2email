@@ -9,7 +9,6 @@ const Slack = require('slack-node');
 let transporter;
 let slack = new Slack();
 let mailOptions = {};
-let lineCounter = 0;
 const fileWatchers = {};
 let messages = new Array();
 let queueWorkerRunning = false;
@@ -26,12 +25,31 @@ async function notificationQueueWorker() {
             continue;
         }
 
+        let filterExpression = config.defaultMessageTemplateFilter;
+        if (message.expression.filter) {
+            filterExpression = message.expression.filter;
+        }
+        let match = message.message.match(filterExpression);
+
+        if (match === null) match = message.message;
+
+        const oldSubject = message.expression.subject;
+        if (typeof (message.expression.subject) !== 'function') {
+            var oldSubjectValue = message.expression.subject.toString();
+            message.expression.subject = () => oldSubjectValue;
+        }
+
+        const oldTemplate = message.expression.template;
+        if (typeof (message.expression.template) !== 'function') {
+            message.expression.template = () => `\`${message.message}\``;
+        }
+
         if (config.enableEmail) {
             await sendMail({
                 from: config.mailfrom,
                 to: config.mailto,
-                subject: `${config.subjectPrefix}`,
-                text: `${message.expression.subject}${message.message}`
+                subject: `${config.subjectPrefix}${message.expression.subject(match)}`,
+                text: message.expression.template(match)
             });
         }
 
@@ -39,12 +57,14 @@ async function notificationQueueWorker() {
             slack.webhook({
                 channel: config.slackChannel,
                 username: config.slackUserName,
-                text: `${message.expression.subject}${message.message}`
+                text: `${message.expression.subject(match)}${message.expression.template(match)}`
             }, (err, response) => {
                 if (config.debug && err) console.log(err, response);
             });
         }
 
+        message.expression.subject = oldSubjectValue;
+        message.expression.template = oldTemplate;
         await sleep(1000);
     }
 
@@ -57,7 +77,6 @@ async function filterLog( /** @type {string} */ line) {
         expression.match.lastIndex = 0;
 
         if (expression.match.test(line)) {
-            config.expressions[index].matchCounter++;
             messages.push({
                 expression: expression,
                 message: line
@@ -86,11 +105,6 @@ async function setupTail( /** @type {string[]} */ filesToWatch) {
         process.exit(1);
     }
 
-    for (let index = 0; index < config.expressions.length; index++) {
-        config.expressions[index].matchCounter = 0;
-        config.expressions[index].lastMatchContent = '';
-    }
-
     for (const fileName of filesToWatch) {
         if (!(await fs.exists(fileName))) {
             console.log(`File not found, not watching: ${fileName}`);
@@ -105,7 +119,6 @@ async function setupTail( /** @type {string[]} */ filesToWatch) {
         });
 
         tail.on('line', ( /** @type {string} */ data) => {
-            lineCounter++;
             filterLog(data);
         });
 

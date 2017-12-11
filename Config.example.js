@@ -4,8 +4,8 @@ class Config {
             'test.txt',
             'test1.txt'
         ];
-        this.defaultMessageTemplateFilter = /^\[((\d{1,2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}) ([+-]\d{4}))\] status:(\d{3}) request_time:(\d{1,}.\d{3}) upstream_response_time:(\d{1,}.\d{3}) bytes_sent:(\d{1,}) client_ip:(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|(:{0,2}[\da-f]{1,4}){1,8}) domain:([\w.-]*) request:"((\w{3,7}) (\/[\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*) HTTP\/(\d\.\d))" referer:"([\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*)" user_agent:"([\w-.,_~: \/[\]%@!$'()*+;?=&#]*)"$/g
-        this.defaultMessageTemplateFilterMatchingGroupNames = {
+        this.defaultMessageTemplateFilter = /^\[((\d{1,2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}) ([+-]\d{4}))\] status:(\d{3}) request_time:(\d{1,}.\d{3}) upstream_response_time:(\d{1,}.\d{3}) bytes_sent:(\d{1,}) client_ip:(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|(:{0,2}[\da-f]{1,4}){1,8}) domain:([\w.-]*) request:"((\w{3,7}) (\/[\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*) HTTP\/(\d\.\d))" referer:"([\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*)" user_agent:"([\w-.,_~: \/[\]%@!$'()*+;?=&#]*)"$/;
+        this.defaultMatchingGroupName = {
             All: 0,
             DateTime: 1,
             Date: 2,
@@ -26,11 +26,16 @@ class Config {
         };
         this.expressions = [
             {
-                match: /HTTP\/\d\.\d\" 404/g,
-                subject: 'HTTP 404: ',
-                //messageTemplateFilter: /()/g
+                match: /status:404/,
+                //filter: (/** @type {string} */ line) => { return line.match(/./); },
+                subject: (/** @type {any} */ match) => {
+                    return `HTTP ${match[this.defaultMatchingGroupName.StatusCode]}: `;
+                },
+                template: (/** @type {any} */ match) => {
+                    return `${match[this.defaultMatchingGroupName.Domain]} \`"${match[this.defaultMatchingGroupName.Request]}"\``;
+                }
             },
-            { match: /HTTP\/\d\.\d\" 5\d{2}/g, subject: 'HTTP 5xx: ' }
+            { match: /status:5\d{2}/, subject: 'HTTP 5xx: ' }
         ];
 
         this.enableEmail = false;
