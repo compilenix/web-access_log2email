@@ -23,47 +23,26 @@ const defaultMessageTemplateFilterMatchingGroupNames = {
 
 // Test strings
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:60.004 upstream_response_time:60.000 bytes_sent:228 client_ip:1.22.33.44 domain:example.com request:"GET / HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:60.004 upstream_response_time:60.000 bytes_sent:228 client_ip:1.22.33.44 domain:xn--4ca.com request:"GET / HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:0.000 upstream_response_time:0.000 bytes_sent:0 client_ip:1.22.33.44 domain:example.com request:"GET / HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:0.000 upstream_response_time:0.000 bytes_sent:0 client_ip:1.22.33.44 domain:example.com request:"POST / HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:0.000 upstream_response_time:0.000 bytes_sent:0 client_ip:1.22.33.44 domain:example.com request:"HEAD / HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:0.000 upstream_response_time:0.000 bytes_sent:0 client_ip:1.22.33.44 domain:example.com request:"CONNECT / HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:0.000 upstream_response_time:0.000 bytes_sent:0 client_ip:1.22.33.44 domain:example.com request:"TRACE / HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:0.000 upstream_response_time:0.000 bytes_sent:0 client_ip:1.22.33.44 domain:example.com request:"PROPFIND / HTTP/0.9" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:0.000 upstream_response_time:0.000 bytes_sent:0 client_ip:1.22.33.44 domain:example.com request:"OPTIONS / HTTP/0.9" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET / HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET /post/1564a3 HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET /post/1564a3?a= HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET /post/1564a3?a=56&da='dsf' HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET /\x22<script>alert(\x22lalal\x22)</script> HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET /\xF0\x9F\x92\xA9 HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET / HTTP/2.0" referer:"http://example.com/\xF0\x9F\x92\xA9" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:fd80::e domain:example.com request:"GET / HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:fd80:0000:0000:0000:0000:0000:0000:000e domain:example.com request:"GET / HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET /?&mail=bob@example.com HTTP/2.0" referer:"-" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET / HTTP/2.0" referer:"https://example.com/page/1" user_agent:""
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET / HTTP/2.0" referer:"-" user_agent:"curl/7.53.1"
-
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET / HTTP/2.0" referer:"-" user_agent:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7"
 
 // ----------------------------------------------------
