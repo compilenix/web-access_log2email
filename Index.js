@@ -35,7 +35,8 @@ async function notificationQueueWorker() {
 
         const oldSubject = message.expression.subject;
         if (typeof (message.expression.subject) !== 'function') {
-            var oldSubjectValue = message.expression.subject.toString();
+            var oldSubjectValue = '';
+            if (message.expression.subject.toString) oldSubjectValue = message.expression.subject.toString();
             message.expression.subject = () => oldSubjectValue;
         }
 
