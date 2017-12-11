@@ -1,6 +1,6 @@
 // Nginx
 // log_format main '[$time_local] status:$status request_time:$request_time upstream_response_time:$upstream_response_time bytes_sent:$body_bytes_sent client_ip:$remote_addr domain:$host request:"$request" referer:"$http_referer" user_agent:"$http_user_agent"';
-const defaultMessageTemplateFilter = /^\[((\d{1,2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}) ([+-]\d{4}))\] status:(\d{3}) request_time:(\d{1,}.\d{3}) upstream_response_time:(\d{1,}.\d{3}) bytes_sent:(\d{1,}) client_ip:(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|(:{0,2}[\da-f]{1,4}){1,8}) domain:([\w.-]*) request:"((\w{3,7}) (\/[\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*) HTTP\/(\d\.\d))" referer:"([\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*)" user_agent:"([\w-.,_~: \/[\]%@!$'()*+;?=&#]*)"$/g;
+const defaultMessageTemplateFilter = /^\[((\d{1,2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}) ([+-]\d{4}))\] status:(\d{3}) request_time:(\d{1,}.\d{3}) upstream_response_time:(\d{1,}.\d{3}) bytes_sent:(\d{1,}) client_ip:(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|(:{0,2}[\da-f]{1,4}){1,8}) domain:([\w.-]*) request:"((\w{3,8}) (\/[\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*) HTTP\/(\d\.\d))" referer:"([\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*)" user_agent:"([\w-.,_~: \/[\]%@!$'()*+;?=&#]*)"$/;
 const defaultMessageTemplateFilterMatchingGroupNames = {
     All: 0,
     DateTime: 1,
@@ -36,7 +36,7 @@ const defaultMessageTemplateFilterMatchingGroupNames = {
 
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:0.000 upstream_response_time:0.000 bytes_sent:0 client_ip:1.22.33.44 domain:example.com request:"TRACE / HTTP/2.0" referer:"-" user_agent:""
 
-// [10/Dec/2017:01:08:21 +0100] status:200 request_time:0.000 upstream_response_time:0.000 bytes_sent:0 client_ip:1.22.33.44 domain:example.com request:"TRACE / HTTP/0.9" referer:"-" user_agent:""
+// [10/Dec/2017:01:08:21 +0100] status:200 request_time:0.000 upstream_response_time:0.000 bytes_sent:0 client_ip:1.22.33.44 domain:example.com request:"PROPFIND / HTTP/0.9" referer:"-" user_agent:""
 
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET / HTTP/2.0" referer:"-" user_agent:""
 
