@@ -38,6 +38,8 @@ const defaultMessageTemplateFilterMatchingGroupNames = {
 
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:0.000 upstream_response_time:0.000 bytes_sent:0 client_ip:1.22.33.44 domain:example.com request:"PROPFIND / HTTP/0.9" referer:"-" user_agent:""
 
+// [10/Dec/2017:01:08:21 +0100] status:200 request_time:0.000 upstream_response_time:0.000 bytes_sent:0 client_ip:1.22.33.44 domain:example.com request:"OPTIONS / HTTP/0.9" referer:"-" user_agent:""
+
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET / HTTP/2.0" referer:"-" user_agent:""
 
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:5.060 upstream_response_time:5.060 bytes_sent:521 client_ip:1.22.33.44 domain:example.com request:"GET /post/1564a3 HTTP/2.0" referer:"-" user_agent:""
