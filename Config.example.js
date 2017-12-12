@@ -4,6 +4,7 @@ class Config {
             'test.txt',
             'test1.txt'
         ];
+        // nginx
         this.defaultMessageTemplateFilter = /^\[((\d{1,2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}) ([+-]\d{4}))\] status:(\d{3}) request_time:(\d{1,}.\d{3}) upstream_response_time:(\d{1,}.\d{3}) bytes_sent:(\d{1,}) client_ip:(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|(:{0,2}[\da-f]{1,4}){1,8}) domain:([\w.-]*) request:"((\w{3,8}) (\/[\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*) HTTP\/(\d\.\d))" referer:"([\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*)" user_agent:"([\w-.,_~: \/[\]%@!$'()*+;?=&#]*)"$/;
         this.defaultMatchingGroupName = {
             All: 0,
@@ -24,6 +25,28 @@ class Config {
             Referer: 16,
             UserAgent: 17
         };
+        // apache
+        // this.defaultMessageTemplateFilter = /^([\w.-]*):(\d{1,5}) (\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|(:{0,2}[\da-f]{1,4}){1,8}) ([\w.-]*) ([\w.-]*) \[((\d{1,2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}) ([+-]\d{4}))\] "((\w{3,8}) (\/[\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*) HTTP\/(\d\.\d))" (\d{3}) (\d{1,}) "([\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*)" "([\w-.,_~: \/[\]%@!$'()*+;?=&#]*)"$/;
+        // this.defaultMatchingGroupName = {
+        //     All: 0,
+        //     Domain: 1,
+        //     Port: 2,
+        //     ClientIp: 3,
+        //     RemoteLogonName: 5,
+        //     RemoteUser: 6,
+        //     DateTime: 7,
+        //     Date: 8,
+        //     Time: 9,
+        //     TimeZone: 10,
+        //     Request: 11,
+        //     Method: 12,
+        //     Path: 13,
+        //     ProtocolVersion: 14,
+        //     StatusCode: 15,
+        //     BytesSent: 16,
+        //     Referer: 17,
+        //     UserAgent: 18
+        // };
         this.expressions = [
             {
                 match: /status:404/,
