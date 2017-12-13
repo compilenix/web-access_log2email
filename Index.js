@@ -38,13 +38,15 @@ async function notificationQueueWorker() {
         const oldSubject = message.expression.subject;
         if (typeof (message.expression.subject) !== 'function') {
             var oldSubjectValue = '';
-            if (message.expression.subject.toString) oldSubjectValue = message.expression.subject.toString();
+            if (message.expression.subject && message.expression.subject.toString) oldSubjectValue = message.expression.subject.toString();
             message.expression.subject = () => oldSubjectValue;
         }
 
         const oldTemplate = message.expression.template;
         if (typeof (message.expression.template) !== 'function') {
-            message.expression.template = () => `\`${message.message}\``;
+            var oldTemplateValue = `\`${message.message}\``;
+            if (message.expression.template && message.expression.template.toString) oldTemplateValue = message.expression.template.toString();
+            message.expression.template = () => oldTemplateValue;
         }
 
         if (config.enableEmail) {
@@ -56,18 +58,20 @@ async function notificationQueueWorker() {
             });
         }
 
+        const oldSlackOptions = message.expression.slackOptions;
         if (config.enableSlack) {
-            slack.webhook({
-                channel: config.slackChannel,
-                username: config.slackUserName,
-                text: `${message.expression.subject(match)}${message.expression.template(match)}`
-            }, (err, response) => {
+            let payload = message.expression.slackOptions;
+            payload.attachments[0].fallback = `${message.expression.subject(match)}${message.expression.template(match)}`;
+            payload.attachments[0].text = payload.attachments[0].fallback;
+            payload.attachments[0].ts = Date.now() / 1000;
+            slack.webhook(payload, (err, response) => {
                 if (config.debug && err) console.log(err, response);
             });
         }
 
         message.expression.subject = oldSubject;
         message.expression.template = oldTemplate;
+        message.expression.slackOptions = oldSlackOptions;
         await sleep(1000);
     }
 

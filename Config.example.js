@@ -47,19 +47,6 @@ class Config {
         //     Referer: 17,
         //     UserAgent: 18
         // };
-        this.expressions = [
-            {
-                match: /status:404/,
-                //filter: (/** @type {string} */ line) => { return line.match(/./); },
-                subject: (/** @type {any} */ match) => {
-                    return `HTTP ${match[this.defaultMatchingGroupName.StatusCode]}: `;
-                },
-                template: (/** @type {any} */ match) => {
-                    return `${match[this.defaultMatchingGroupName.Domain]} \`"${match[this.defaultMatchingGroupName.Request]}"\``;
-                }
-            },
-            { match: /status:5\d{2}/, subject: 'HTTP 5xx: ' }
-        ];
 
         this.enableEmail = false;
         this.smtpUsername = 'smtp login username';
@@ -75,7 +62,53 @@ class Config {
         this.slackWebHookUri = 'https://hooks.slack.com/services/xxxxxx/xxxxxx/xxxxxx';
         this.slackChannel = '#general';
         this.slackUsername = 'webserver-access_log-bot';
+
+        this.botName = 'web-access_log2email';
+        this.botIcon = "https://compilenix.org/cdn/Compilenix.png";
         this.debug = true;
+
+        this.expressions = [
+            {
+                match: /" 503 /,
+                //filter: (/** @type {string} */ line) => { return line.match(/./); },
+                subject: (/** @type {any} */ match) => {
+                    return `HTTP ${match[this.defaultMatchingGroupName.StatusCode]} (something we're already fixing...)\n`;
+                },
+                template: (/** @type {any} */ match) => {
+                    return `${match[this.defaultMatchingGroupName.Method]} ${match[this.defaultMatchingGroupName.Domain]} \`${match[this.defaultMatchingGroupName.Path]}\`\nUser-Agent: \`${match[this.defaultMatchingGroupName.UserAgent]}\``;
+                },
+                slackOptions: {
+                    channel: this.slackChannel,
+                    username: this.slackUsername,
+                    attachments: [{
+                        footer: this.botName,
+                        footer_icon: this.botIcon,
+                        color: "#f0d32c",
+                        mrkdwn_in: ["text", "pretext"]
+                    }]
+                }
+            },
+            {
+                match: /" 5(?!03)\d{2} /, // matches all 5xx status codes, except a 503 (using regex negative lookahead)
+                //filter: (/** @type {string} */ line) => { return line.match(/./); },
+                subject: (/** @type {any} */ match) => {
+                    return `HTTP ${match[this.defaultMatchingGroupName.StatusCode]}\n`;
+                },
+                template: (/** @type {any} */ match) => {
+                    return `${match[this.defaultMatchingGroupName.Method]} ${match[this.defaultMatchingGroupName.Domain]} \`${match[this.defaultMatchingGroupName.Path]}\`\nUser-Agent: \`${match[this.defaultMatchingGroupName.UserAgent]}\``;
+                },
+                slackOptions: {
+                    channel: this.slackChannel,
+                    username: this.slackUsername,
+                    attachments: [{
+                        footer: this.botName,
+                        footer_icon: this.botIcon,
+                        color: "#c4463d",
+                        mrkdwn_in: ["text", "pretext"]
+                    }]
+                }
+            }
+        ];
     }
 };
 
