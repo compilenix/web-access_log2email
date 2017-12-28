@@ -69,8 +69,7 @@ class Config {
 
         this.expressions = [
             {
-                match: /" 503 /,
-                //filter: (/** @type {string} */ line) => { return line.match(/./); },
+                match: / status:503 /,
                 subject: (/** @type {any} */ match) => {
                     return `HTTP ${match[this.defaultMatchingGroupName.StatusCode]} (something we're already fixing...)\n`;
                 },
@@ -89,9 +88,10 @@ class Config {
                 }
             },
             {
-                match: /" 5(?!03)\d{2} /, // matches all 5xx status codes, except a 503 (using regex negative lookahead)
-                //filter: (/** @type {string} */ line) => { return line.match(/./); },
+                match: / status:5(?!03)\d{2} /, // matches all 5xx status codes, except a 503 (using regex negative lookahead)
+                //filter: (/** @type {string} */ line) => { return line.match(/./); }, // use custom regex filter instead of this.defaultMatchingGroupName
                 subject: (/** @type {any} */ match) => {
+                    if (match[this.defaultMatchingGroupName.Path].startsWith("/RequestToIgnore") return false; // return false to ignore/dismiss this message
                     return `HTTP ${match[this.defaultMatchingGroupName.StatusCode]}\n`;
                 },
                 template: (/** @type {any} */ match) => {

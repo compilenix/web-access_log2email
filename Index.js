@@ -49,19 +49,22 @@ async function notificationQueueWorker() {
             message.expression.template = () => oldTemplateValue;
         }
 
-        if (config.enableEmail) {
+        let subject = message.expression.subject(match);
+        let template = message.expression.template(match);
+
+        if (subject !== false && template !== false && config.enableEmail) {
             await sendMail({
                 from: config.mailfrom,
                 to: config.mailto,
-                subject: `${config.subjectPrefix}${message.expression.subject(match)}`,
-                text: message.expression.template(match)
+                subject: `${config.subjectPrefix}${subject}`,
+                text: template
             });
         }
 
         const oldSlackOptions = message.expression.slackOptions;
-        if (config.enableSlack) {
+        if (subject !== false && template !== false && config.enableSlack) {
             let payload = message.expression.slackOptions;
-            payload.attachments[0].fallback = `${message.expression.subject(match)}${message.expression.template(match)}`;
+            payload.attachments[0].fallback = `${subject}${template}`;
             payload.attachments[0].text = payload.attachments[0].fallback;
             payload.attachments[0].ts = Date.now() / 1000;
             slack.webhook(payload, (err, response) => {
