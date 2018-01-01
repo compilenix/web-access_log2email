@@ -1,8 +1,8 @@
 class Config {
     constructor() {
         this.filesToWatch = [
-            'test.txt',
-            'test1.txt'
+            "test.txt",
+            "test1.txt"
         ];
         // nginx
         this.defaultMessageTemplateFilter = /^\[((\d{1,2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}) ([+-]\d{4}))\] status:(\d{3}) request_time:(\d{1,}.\d{3}) upstream_response_time:((\d{1,}.\d{3})|-) bytes_sent:(\d{1,}) client_ip:(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|(:{0,2}[\da-f]{1,4}){1,8}) domain:([\w.-]*) request:"((\w{3,8}) (\/[\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*) HTTP\/(\d\.\d))" referer:"([\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*)" user_agent:"([\w-.,_~: \/[\]%@!$'()*+;?=&#]*)"$/;
@@ -49,21 +49,21 @@ class Config {
         // };
 
         this.enableEmail = false;
-        this.smtpUsername = 'smtp login username';
-        this.smtpPassword = 'password';
-        this.smtpHost = 'your.email.server';
+        this.smtpUsername = "smtp login username";
+        this.smtpPassword = "password";
+        this.smtpHost = "your.email.server";
         this.smtpPort = 25;
         this.smtps = false;
-        this.mailfrom = 'foo@bar.local';
-        this.mailto = 'foo@bar.local';
-        this.subjectPrefix = 'access_log mailer: ';
+        this.mailfrom = "foo@bar.local";
+        this.mailto = "foo@bar.local";
+        this.subjectPrefix = "access_log mailer: ";
 
         this.enableSlack = false;
-        this.slackWebHookUri = 'https://hooks.slack.com/services/xxxxxx/xxxxxx/xxxxxx';
-        this.slackChannel = '#general';
-        this.slackUsername = 'webserver-access_log-bot';
+        this.slackWebHookUri = "https://hooks.slack.com/services/xxxxxx/xxxxxx/xxxxxx";
+        this.slackChannel = "#general";
+        this.slackUsername = "webserver-access_log-bot";
 
-        this.botName = 'web-access_log2email';
+        this.botName = "web-access_log2email";
         this.botIcon = "https://compilenix.org/cdn/Compilenix.png";
         this.debug = true;
 
@@ -110,6 +110,6 @@ class Config {
             }
         ];
     }
-};
+}
 
 module.exports = new Config();

@@ -1,10 +1,10 @@
-'use-strict';
+"use-strict";
 
 const fs = require("fs-extra");
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 const config = require("./Config.js");
-const Tail = require('tail').Tail;
-const Slack = require('slack-node');
+const Tail = require("tail").Tail;
+const Slack = require("slack-node");
 
 let transporter;
 let slack = new Slack();
@@ -36,14 +36,14 @@ async function notificationQueueWorker() {
         if (match === null) match = message.message;
 
         const oldSubject = message.expression.subject;
-        if (typeof (message.expression.subject) !== 'function') {
-            var oldSubjectValue = '';
+        if (typeof (message.expression.subject) !== "function") {
+            var oldSubjectValue = "";
             if (message.expression.subject && message.expression.subject.toString) oldSubjectValue = message.expression.subject.toString();
             message.expression.subject = () => oldSubjectValue;
         }
 
         const oldTemplate = message.expression.template;
-        if (typeof (message.expression.template) !== 'function') {
+        if (typeof (message.expression.template) !== "function") {
             var oldTemplateValue = `\`${message.message}\``;
             if (message.expression.template && message.expression.template.toString) oldTemplateValue = message.expression.template.toString();
             message.expression.template = () => oldTemplateValue;
@@ -102,7 +102,7 @@ async function sendMail(mailOptions) {
                 if (config.debug) console.log(error);
                 reject(error);
             } else {
-                if (config.debug) console.log('Email sent: ' + info.response);
+                if (config.debug) console.log("Email sent: " + info.response);
                 resolve(info);
             }
         });
@@ -111,7 +111,7 @@ async function sendMail(mailOptions) {
 
 async function setupTail( /** @type {string[]} */ filesToWatch) {
     if (!config.expressions || config.expressions.length < 1) {
-        console.error('no expressions defined in config!');
+        console.error("no expressions defined in config!");
         process.exit(1);
     }
 
@@ -128,11 +128,11 @@ async function setupTail( /** @type {string[]} */ filesToWatch) {
             follow: true
         });
 
-        tail.on('line', ( /** @type {string} */ data) => {
+        tail.on("line", ( /** @type {string} */ data) => {
             filterLog(data);
         });
 
-        tail.on('error', error => {
+        tail.on("error", error => {
             console.log(`Watcher ERROR (${fileName}): `, error);
         });
 
@@ -155,7 +155,7 @@ function setupSmtp() {
         from: config.mailfrom,
         to: config.mailto,
         subject: `${config.subjectPrefix} -`,
-        text: ''
+        text: ""
     };
 }
 
