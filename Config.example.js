@@ -70,10 +70,10 @@ class Config {
         this.expressions = [
             {
                 match: / status:503 /,
-                subject: (/** @type {any} */ match) => {
+                subject: (/** @type {string[]|string} */ match) => {
                     return `HTTP ${match[this.defaultMatchingGroupName.StatusCode]} (something we're already fixing...)\n`;
                 },
-                template: (/** @type {any} */ match) => {
+                template: (/** @type {string[]|string} */ match) => {
                     return `${match[this.defaultMatchingGroupName.Method]} ${match[this.defaultMatchingGroupName.Domain]} \`${match[this.defaultMatchingGroupName.Path]}\`\nUser-Agent: \`${match[this.defaultMatchingGroupName.UserAgent]}\``;
                 },
                 slackOptions: {
@@ -90,11 +90,11 @@ class Config {
             {
                 match: / status:5(?!03)\d{2} /, // matches all 5xx status codes, except a 503 (using regex negative lookahead)
                 //filter: (/** @type {string} */ line) => { return line.match(/./); }, // use custom regex filter instead of this.defaultMatchingGroupName
-                subject: (/** @type {any} */ match) => {
-                    if (match[this.defaultMatchingGroupName.Path].startsWith("/RequestToIgnore") return false; // return false to ignore/dismiss this message
+                subject: (/** @type {string[]|string} */ match) => {
+                    if (match[this.defaultMatchingGroupName.Path].startsWith("/RequestToIgnore")) return false; // return false to ignore/dismiss this message
                     return `HTTP ${match[this.defaultMatchingGroupName.StatusCode]}\n`;
                 },
-                template: (/** @type {any} */ match) => {
+                template: (/** @type {string[]|string} */ match) => {
                     return `${match[this.defaultMatchingGroupName.Method]} ${match[this.defaultMatchingGroupName.Domain]} \`${match[this.defaultMatchingGroupName.Path]}\`\nUser-Agent: \`${match[this.defaultMatchingGroupName.UserAgent]}\``;
                 },
                 slackOptions: {
