@@ -21,8 +21,6 @@ async function notificationQueueWorker() {
         let message = messages[0];
         messages.shift();
 
-        if (messages.length > 0) console.log(`remaining messages in queue: ${messages.length}`);
-
         if (!message) {
             continue;
         }
@@ -51,8 +49,12 @@ async function notificationQueueWorker() {
 
         let subject = message.expression.subject(match);
         let template = message.expression.template(match);
+        let messageFiltered = false;
+        if (subject === false || template === false) {
+            messageFiltered = true;
+        }
 
-        if (subject !== false && template !== false && config.enableEmail) {
+        if (!messageFiltered && config.enableEmail) {
             await sendMail({
                 from: config.mailfrom,
                 to: config.mailto,
@@ -62,7 +64,7 @@ async function notificationQueueWorker() {
         }
 
         const oldSlackOptions = message.expression.slackOptions;
-        if (subject !== false && template !== false && config.enableSlack) {
+        if (!messageFiltered && config.enableSlack) {
             let payload = message.expression.slackOptions;
             payload.attachments[0].fallback = `${subject}${template}`;
             payload.attachments[0].text = payload.attachments[0].fallback;
@@ -75,7 +77,11 @@ async function notificationQueueWorker() {
         message.expression.subject = oldSubject;
         message.expression.template = oldTemplate;
         message.expression.slackOptions = oldSlackOptions;
-        await sleep(1000);
+
+        if (!messageFiltered) {
+            if (messages.length > 0) console.log(`remaining messages in queue: ${messages.length}`);
+            await sleep(1000);
+        }
     }
 
     queueWorkerRunning = false;
