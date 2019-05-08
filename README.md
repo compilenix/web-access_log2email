@@ -1,4 +1,7 @@
 # Donate if you want
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/compilenix/web-access_log2email.svg)](https://greenkeeper.io/)
+
 https://www.paypal.me/compilenix
 
 # Installation
