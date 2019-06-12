@@ -1,26 +1,28 @@
+// @ts-nocheck
+/* eslint-disable no-undef */
 // Nginx
 // log_format main '[$time_local] status:$status request_time:$request_time upstream_response_time:$upstream_response_time bytes_sent:$body_bytes_sent client_ip:$remote_addr domain:$host port:$server_port request:"$request" referer:"$http_referer" user_agent:"$http_user_agent"';
-defaultMessageTemplateFilter = /^\[((\d{1,2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}) ([+-]\d{4}))\] status:(\d{3}) request_time:(\d{1,}\.\d{3}) upstream_response_time:((\d{1,}\.\d{3})|-) bytes_sent:(\d{1,}) client_ip:(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|(:{0,2}[\da-f]{1,4}){1,8}) domain:([\w.-]*) port:(\d{1,5}) request:"((\w{3,8}) ([\w-.,_~:<>\\\/\[\]%@!$'()*+;?=&#]*) HTTP\/(\d\.\d))" referer:"([\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*)" user_agent:"([\w-.,_~: /[\]%@!$'()*+;?=&#]*)"$/;
+defaultMessageTemplateFilter = /^\[((\d{1,2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}) ([+-]\d{4}))\] status:(\d{3}) request_time:(\d{1,}\.\d{3}) upstream_response_time:((\d{1,}\.\d{3})|-) bytes_sent:(\d{1,}) client_ip:(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|(:{0,2}[\da-f]{1,4}){1,8}) domain:([\w.-]*) port:(\d{1,5}) request:"((\w{3,8}) ([\w-.,_~:<>\\\/\[\]%@!$'()*+;?=&#]*) HTTP\/(\d\.\d))" referer:"([\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*)" user_agent:"([\w-.,_~: /[\]%@!$'()*+;?=&#]*)"$/
 defaultMatchingGroupName = {
-    All: 0,
-    DateTime: 1,
-    Date: 2,
-    Time: 3,
-    TimeZone: 4,
-    StatusCode: 5,
-    RequestTime: 6,
-    UpstreamResponseTime: 7,
-    BytesSent: 9,
-    ClientIp: 10,
-    Domain: 12,
-    Port: 13,
-    Request: 14,
-    Method: 15,
-    Path: 16,
-    ProtocolVersion: 17,
-    Referer: 18,
-    UserAgent: 19
-};
+  All: 0,
+  DateTime: 1,
+  Date: 2,
+  Time: 3,
+  TimeZone: 4,
+  StatusCode: 5,
+  RequestTime: 6,
+  UpstreamResponseTime: 7,
+  BytesSent: 9,
+  ClientIp: 10,
+  Domain: 12,
+  Port: 13,
+  Request: 14,
+  Method: 15,
+  Path: 16,
+  ProtocolVersion: 17,
+  Referer: 18,
+  UserAgent: 19
+}
 
 // Test strings
 // [10/Dec/2017:01:08:21 +0100] status:200 request_time:60.004 upstream_response_time:60.000 bytes_sent:228 client_ip:1.22.33.44 domain:example.com request:"GET / HTTP/2.0" referer:"-" user_agent:""
@@ -50,27 +52,27 @@ defaultMatchingGroupName = {
 // ----------------------------------------------------
 // Apache
 // LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
-defaultMessageTemplateFilter = /^([\w.-]*):(\d{1,5}) (\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|(:{0,2}[\da-f]{1,4}){1,8}) ([\w.-]*) ([\w.-]*) \[((\d{1,2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}) ([+-]\d{4}))\] "((\w{3,8}) (\/[\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*) HTTP\/(\d\.\d)|-)" (\d{3}) (\d{1,}) "([\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*)" "([\w-.,_~: \/[\]%@!$'()*+;?=&#]*)"$/;
+defaultMessageTemplateFilter = /^([\w.-]*):(\d{1,5}) (\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|(:{0,2}[\da-f]{1,4}){1,8}) ([\w.-]*) ([\w.-]*) \[((\d{1,2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}) ([+-]\d{4}))\] "((\w{3,8}) (\/[\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*) HTTP\/(\d\.\d)|-)" (\d{3}) (\d{1,}) "([\w-.,_~:<>\\/[\]%@!$'()*+;?=&#]*)" "([\w-.,_~: /[\]%@!$'()*+;?=&#]*)"$/
 defaultMatchingGroupName = {
-    All: 0,
-    Domain: 1,
-    Port: 2,
-    ClientIp: 3,
-    RemoteLogonName: 5,
-    RemoteUser: 6,
-    DateTime: 7,
-    Date: 8,
-    Time: 9,
-    TimeZone: 10,
-    Request: 11,
-    Method: 12,
-    Path: 13,
-    ProtocolVersion: 14,
-    StatusCode: 15,
-    BytesSent: 16,
-    Referer: 17,
-    UserAgent: 18
-};
+  All: 0,
+  Domain: 1,
+  Port: 2,
+  ClientIp: 3,
+  RemoteLogonName: 5,
+  RemoteUser: 6,
+  DateTime: 7,
+  Date: 8,
+  Time: 9,
+  TimeZone: 10,
+  Request: 11,
+  Method: 12,
+  Path: 13,
+  ProtocolVersion: 14,
+  StatusCode: 15,
+  BytesSent: 16,
+  Referer: 17,
+  UserAgent: 18
+}
 
 // Test strings
 // example.com:443 1.22.33.44 - - [11/Dec/2017:15:48:27 +0100] "GET / HTTP/2.0" 200 228 "-" ""

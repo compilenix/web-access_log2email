@@ -5,10 +5,10 @@ https://www.paypal.me/compilenix
 ```sh
 git clone https://git.compilenix.org/Compilenix/web-access_log2email.git
 cd web-access_log2email
-npm install
-cp Config.example.js Config.js
-$EDITOR Config.js # make your changes
-node Index.js
+npm ci --production
+cp config.example.js config.js
+$EDITOR config.js # make your changes
+node index.js
 ```
 
 ## Profit!
