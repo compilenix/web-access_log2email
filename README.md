@@ -1,6 +1,12 @@
 # Donate if you want
 https://www.paypal.me/compilenix
 
+# Requirements
+- bash
+- git
+- zip
+- unzip
+
 # Installation
 ```sh
 git clone https://git.compilenix.org/Compilenix/web-access_log2email.git
