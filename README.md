@@ -1,6 +1,9 @@
 # Donate if you want
 https://www.paypal.me/compilenix
 
+# Usage
+Slack and MS Teams *can't* be enabled at the same time, because of the differing message format.
+
 # Requirements
 - bash
 - git
