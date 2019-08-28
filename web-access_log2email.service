@@ -1,0 +1,15 @@
+[Unit]
+Description=Webserver access log to E-Mail, Slack, Mattermost or MS Teams Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/web-access_log2email
+ExecStart=/opt/web-access_log2email/node/bin/node index.js
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
