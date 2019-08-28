@@ -65,6 +65,9 @@ class Config {
     this.slackChannel = '#general'
     this.slackUsername = 'webserver-access_log-bot'
 
+    this.enableMsTeams = false
+    this.teamsWebHookUri = 'https://outlook.office.com/webhook/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx@xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/IncomingWebhook/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+
     this.botName = 'web-access_log2email'
     this.botIcon = 'https://compilenix.org/cdn/Compilenix.png'
     this.debug = true
@@ -91,26 +94,49 @@ class Config {
         }
       },
       {
-        match: / status:5(?!03)\d{2} /, // matches all 5xx status codes, except a 503 (using regex negative lookahead)
+        match: / status:5\d{2} /, // matches all 5xx status codes
         // filter: (/** @type {string} */ line) => { return line.match(/./); }, // use custom regex filter instead of this.defaultMatchingGroupName
         subject: (/** @type {string[]|string} */ match) => {
           if (match[this.defaultMatchingGroupName.Path].startsWith('/RequestToIgnore')) return false // return false to ignore/dismiss this message
           return `HTTP ${match[this.defaultMatchingGroupName.StatusCode]}\n`
         },
         template: (/** @type {string[]|string} */ match) => {
-          return `${match[this.defaultMatchingGroupName.Method]} ${match[this.defaultMatchingGroupName.Domain]} \`${match[this.defaultMatchingGroupName.Path]}\`\nUser-Agent: \`${match[this.defaultMatchingGroupName.UserAgent]}\``
-        },
-        webhookUri: 'https://hooks.slack.com/services/xxxxxx/xxxxxx/xxxxxx',
-        slackOptions: {
-          channel: this.slackChannel,
-          username: this.slackUsername,
-          attachments: [{
-            footer: this.botName,
-            footer_icon: this.botIcon,
-            color: '#c4463d',
-            mrkdwn_in: ['text', 'pretext']
-          }]
+          return `{
+            "@type": "MessageCard",
+            "@context": "http://schema.org/extensions",
+            "summary": "Server Error post",
+            "themeColor": "c4463d",
+            "sections": [
+              {
+                "activityTitle": "Server Error (500)",
+                "facts": [
+                  {
+                    "name": "When:",
+                    "value": "\`${match[this.defaultMatchingGroupName.DateTime]}\`"
+                  },
+                  {
+                    "name": "Domain:",
+                    "value": "\`${match[this.defaultMatchingGroupName.Domain]}\`"
+                  },
+                  {
+                    "name": "Request:",
+                    "value": "\`${match[this.defaultMatchingGroupName.Request]}\`"
+                  },
+                  {
+                    "name": "User-Agent:",
+                    "value": "\`${match[this.defaultMatchingGroupName.UserAgent]}\`"
+                  },
+                  {
+                    "name": "Referer:",
+                    "value": "\`${match[this.defaultMatchingGroupName.Referer]}\`"
+                  }
+                ],
+                "text": ""
+              }
+            ]
+          }`
         }
+        // webhookUri: 'https://outlook.office.com/webhook/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx@xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/IncomingWebhook/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
       }
     ]
   }

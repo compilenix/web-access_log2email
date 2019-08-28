@@ -8,9 +8,14 @@ const Tail = require('tail').Tail
 
 const config = require('./config.js')
 let transporter
-let mailOptions = {}
+const mailOptions = {
+  from: config.mailfrom,
+  to: config.mailto,
+  subject: '',
+  text: ''
+}
 const fileWatchers = {}
-let messages = []
+const messages = []
 let queueWorkerRunning = false
 
 async function notificationQueueWorker () {
@@ -18,7 +23,7 @@ async function notificationQueueWorker () {
   queueWorkerRunning = true
 
   while (messages.length > 0) {
-    let message = messages[0]
+    const message = messages[0]
     messages.shift()
 
     if (!message) {
@@ -47,29 +52,32 @@ async function notificationQueueWorker () {
       message.expression.template = () => oldTemplateValue
     }
 
-    let subject = message.expression.subject(match)
-    let template = message.expression.template(match)
+    const subject = message.expression.subject(match)
+    const template = message.expression.template(match)
     let messageFiltered = false
     if (subject === false || template === false) {
       messageFiltered = true
     }
 
     if (!messageFiltered && config.enableEmail) {
-      await sendMail({
-        from: config.mailfrom,
-        to: config.mailto,
-        subject: `${config.subjectPrefix}${subject}`,
-        text: template
-      })
+      mailOptions.text = template
+      mailOptions.subject = `${config.subjectPrefix}${subject}`
+      await sendMail(mailOptions)
+      mailOptions.text = ''
+      mailOptions.subject = ''
     }
 
     const oldSlackOptions = message.expression.slackOptions
-    if (!messageFiltered && config.enableSlack) {
-      let payload = message.expression.slackOptions
+    if (!messageFiltered && config.enableSlack && oldSlackOptions) {
+      const payload = message.expression.slackOptions
       payload.attachments[0].fallback = `${subject}${template}`
       payload.attachments[0].text = payload.attachments[0].fallback
       payload.attachments[0].ts = Date.now() / 1000
-      await sendWebook(payload, message.expression.webhookUri)
+      await sendWebook(payload, message.expression.webhookUri || config.slackWebHookUri)
+    }
+
+    if (!messageFiltered && config.enableMsTeams) {
+      await sendWebook(JSON.parse(template), message.expression.webhookUri || config.teamsWebHookUri)
     }
 
     message.expression.subject = oldSubject
@@ -154,17 +162,10 @@ function setupSmtp () {
       pass: config.smtpPassword
     }
   })
-
-  mailOptions = {
-    from: config.mailfrom,
-    to: config.mailto,
-    subject: `${config.subjectPrefix} -`,
-    text: ''
-  }
 }
 
 async function sendWebook (payload, uri, rejectUnauthorized = true) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     try {
       const data = JSON.stringify(payload, /* replacer */ null, /* space */ 0)
       const url = new URL(uri)
@@ -176,6 +177,7 @@ async function sendWebook (payload, uri, rejectUnauthorized = true) {
         headers: {
           'Content-Type': 'application/json',
           'Content-Length': data.length,
+          // eslint-disable-next-line quote-props
           'Accept': 'application/json, text/json;q=0.9, */*;q=0',
           'Accept-Language': 'en',
           'Accept-Encoding': 'identity'
