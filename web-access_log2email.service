@@ -7,8 +7,8 @@ Wants=network-online.target
 Type=simple
 User=www-data
 Group=www-data
-WorkingDirectory=/opt/web-access_log2email
-ExecStart=/opt/web-access_log2email/node/bin/node index.js
+WorkingDirectory=/opt/web-access_log2email/dist
+ExecStart=/opt/web-access_log2email/dist/node/bin/node index.js
 StandardOutput=journal
 
 [Install]
